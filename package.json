@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "@mracsys/randomizer-graph-tool": "^2.1.18",
+    "esbuild": "^0.28.2"
+  },
+  "name": "oot-rsl-race-notes",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:checks": "node scripts/build-checks.mjs",
+    "test:checks": "node scripts/test-checks.cjs"
+  },
+  "browser": {
+    "fs": false,
+    "path": false
+  }
+}
