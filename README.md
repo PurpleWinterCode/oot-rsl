@@ -25,3 +25,9 @@ npm run test:checks
 ```
 
 Conserver les fichiers de licences livrés dans `dist/`.
+
+## Checks hors logique
+
+« Voir out » est actif par défaut. Un second graphe active les tricks glitchless du moteur Rob-132 ; les checks supplémentaires reçoivent le badge `out`. Si seul un âge supplémentaire est hors logique, le badge précise cet âge. Les regroupements gardent les accès logiques et hors logique séparés.
+
+Référence : https://wiki.ootrandomizer.com/index.php?title=Standard . Le passage ambigu entre les boulders du cratère est exclu. Ce calcul couvre les tricks modélisés par le moteur, pas toutes les techniques réalisables ; aucune exception propre à un règlement RoT distinct n’est présumée. Les settings, les objets et les destinations d’entrées restent pris en compte.
