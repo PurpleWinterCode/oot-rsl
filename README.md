@@ -34,7 +34,7 @@ Référence : https://wiki.ootrandomizer.com/index.php?title=Standard . Le passa
 
 ## Tournois
 
-Le sélecteur propose Rupees of Time, League S10 et Scrubs S8. Chaque tournoi possède son carnet local indépendant ; le carnet RoT conserve sa clé historique. Nouvelle race rétablit le preset du tournoi actif. Les valeurs restent modifiables pour la seed.
+Le sélecteur propose Rupees of Time, League S10 et Scrubs S8. Chaque tournoi possède son carnet local indépendant ; le carnet RoT conserve sa clé historique. Nouvelle race rétablit le preset du tournoi actif. Les presets League/Scrubs sont fixes : leurs settings sont rétablis au chargement et ne sont pas modifiables. Les onglets Settings et Avant-race sont masqués, ainsi que les onglets Entrées / Rupees & Hearts désactivés par le preset. Un résumé compact est affiché dans la colonne latérale.
 
 Sources des presets (vérifiées le 8 octobre 2026) : OoTR `Dev/data/presets_default.json` (League S10 et Scrub Tournament) et https://midos.house/event/scrubs/8. Les presets récents sont adaptés au moteur commun Rob-132 ; cette adaptation ne garantit pas toutes les nouveautés de logique des versions 9.x.
 

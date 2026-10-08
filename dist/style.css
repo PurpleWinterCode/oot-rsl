@@ -52,3 +52,5 @@ header{padding:3px 10px;gap:8px}.brandmark{width:25px;height:25px;font-size:10px
 .check-out{flex:none;color:#ffd082;border:1px solid #b78944;border-radius:3px;padding:0 3px;font-size:10px;line-height:14px;white-space:nowrap}
 
 .tournament-picker{display:flex;align-items:center;gap:4px;font-size:11px}.tournament-picker select{max-width:150px;padding:2px 4px}.tournament-seed{display:flex;gap:8px;flex-wrap:wrap;font-size:11px;padding:3px 6px;color:var(--muted)}.tournament-seed label{display:flex;align-items:center;gap:2px}.tournament-seed input{width:12px;height:12px}
+
+.fixed-setting{display:flex;justify-content:space-between;gap:8px;padding:3px 0;border-bottom:1px solid var(--line);font-size:11px}.fixed-setting strong{text-align:right;color:var(--gold);font-weight:500}.fixed-preset #settings-list{display:block}.race-encounters:has(#trials-panel[hidden]){grid-template-columns:repeat(2,minmax(0,1fr))}.race-encounters:has(#trials-panel[hidden]):has(#dungeons-panel[hidden]),.race-encounters:has(#trials-panel[hidden]):has(#warps-owl-panel[hidden]){grid-template-columns:1fr}.race-encounters:not(:has(>.panel:not([hidden]))){display:none}
