@@ -1,0 +1,13 @@
+import fs from 'node:fs';import vm from 'node:vm';import assert from 'node:assert/strict';import {ChecksEngine} from '../src/checks-core.js';
+const cache=JSON.parse(fs.readFileSync('dist/logic-cache.json'));
+for(const id of ['rot','league-s10','scrubs-s8']){
+const c={window:{addEventListener(){}},localStorage:{getItem:()=>id}};vm.createContext(c);for(const path of ['data.js','tournaments.js'])vm.runInContext(fs.readFileSync('dist/'+path,'utf8'),c);
+const d=c.window.RSL_DATA,state=c.window.RSL_NEW_STATE();assert.equal(state.tournamentId,id);assert.equal(c.window.RSL_STORAGE_KEY,id==='rot'?'oot-rsl-race-notes-v1':'oot-rsl-race-notes-v1:'+id);
+const e=new ChecksEngine(cache,d);state.checks??={inventory:{}};state.checks.showOut=false;
+if(id==='rot'){assert.equal(state.values.left11,undefined);continue;}
+state.notes['spawn:0']='KF';state.notes['spawn:1']='ToT';const settings=e.settings(state);assert.equal(settings.open_door_of_time,true);assert.equal(settings.shuffle_silver_rupees,'vanilla');assert.equal(settings.shuffle_freestanding_items,'off');assert(settings.allowed_tricks.length>0);assert.equal(settings.allowed_tricks.length,d.tournaments[id].settings.allowed_tricks.length);assert.equal(state.checks.inventory.Ocarina,1);
+let r=e.evaluate(state);assert(r.locations.some(l=>l.name==='KF Midos Top Left Chest'));assert(!r.locations.some(l=>l.type==='SilverRupee'||l.type==='Freestanding'));assert(!r.locations.some(l=>l.name==='Deku Theater Mask of Truth'));
+if(id==='league-s10'){assert.equal(state.values['left2:count'],'5');assert.equal(state.values['left3:count'],'6');assert.equal(settings.tokensanity,'all');assert.equal(state.values.left6,'DG');assert.equal(settings.shopsanity,'4');assert(!r.locations.some(l=>l.name==='Song from Impa'));}
+else {assert.equal(state.values['left2:count'],'7');assert.equal(state.values['left3:count'],'9');assert.equal(state.checks.inventory['Double Defense'],1);assert.equal(settings.empty_dungeons_mode,'specific');state.checks.inventory=Object.fromEntries(e.allItems.map(i=>[i.name,i.max]));state.checks.emptyDungeons=['Deku Tree','Fire Temple','Water Temple'];r=e.evaluate(state);assert.deepEqual(r.locations.filter(l=>['Deku Tree','Fire Temple','Water Temple'].includes(l.zone)).map(l=>({name:l.name,dungeon:e.graph.worlds[0].get_locations().find(x=>x.name===l.name)?.parent_region?.dungeon})),[]);assert(!r.locations.some(l=>/Kak (40|50) Gold Skulltula Reward/.test(l.name)));state.checks.showOut=true;assert(!e.outEngine);e.evaluate(state);assert(!e.outEngine.settings(state).allowed_tricks.includes('logic_shadow_fire_arrow_entry'));}
+console.log(id,'OK',r.locations.length);
+}

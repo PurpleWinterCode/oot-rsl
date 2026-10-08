@@ -31,3 +31,13 @@ Conserver les fichiers de licences livrés dans `dist/`.
 « Voir out » est actif par défaut. Un second graphe active les tricks glitchless du moteur Rob-132 ; les checks supplémentaires reçoivent le badge `out`. Si seul un âge supplémentaire est hors logique, le badge précise cet âge. Les regroupements gardent les accès logiques et hors logique séparés.
 
 Référence : https://wiki.ootrandomizer.com/index.php?title=Standard . Le passage ambigu entre les boulders du cratère est exclu. Ce calcul couvre les tricks modélisés par le moteur, pas toutes les techniques réalisables ; aucune exception propre à un règlement RoT distinct n’est présumée. Les settings, les objets et les destinations d’entrées restent pris en compte.
+
+## Tournois
+
+Le sélecteur propose Rupees of Time, League S10 et Scrubs S8. Chaque tournoi possède son carnet local indépendant ; le carnet RoT conserve sa clé historique. Nouvelle race rétablit le preset du tournoi actif. Les valeurs restent modifiables pour la seed.
+
+Sources des presets (vérifiées le 8 octobre 2026) : OoTR `Dev/data/presets_default.json` (League S10 et Scrub Tournament) et https://midos.house/event/scrubs/8. Les presets récents sont adaptés au moteur commun Rob-132 ; cette adaptation ne garantit pas toutes les nouveautés de logique des versions 9.x.
+
+League/Scrubs : renseigner l’âge et les deux spawns. Scrubs : ajouter le chant et l’objet aléatoires et cocher les trois donjons précomplétés dans Checks. Les checks désactivés par le preset sont exclus. L’entrée Shadow avec Fire Arrows est exclue des tricks out Scrubs.
+
+Vérification des profils : `node scripts/test-tournaments.mjs`.
