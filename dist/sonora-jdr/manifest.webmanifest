@@ -1,0 +1,13 @@
+{
+  "name":"Sonora JDR — Ambiances & Bruitages",
+  "short_name":"Sonora JDR",
+  "description":"Table de mixage sonore hors ligne pour les maîtres du jeu.",
+  "start_url":"./",
+  "scope":"./",
+  "display":"standalone",
+  "background_color":"#101723",
+  "theme_color":"#101723",
+  "icons":[
+    {"src":"./assets/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}
