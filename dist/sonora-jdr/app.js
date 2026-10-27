@@ -1,6 +1,7 @@
 import {getConfig,putConfig,getAllSounds,getSound,putSound,deleteSound,replaceAll} from './db.js';
 import {uid,categories,createConfig,repairConfig,soundMeta} from './state.js';
 import {AudioMixer} from './audio.js';
+import {integratedCatalog} from './catalog.js';
 
 const root=document.getElementById('app');
 const h=s=>String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');
@@ -136,7 +137,7 @@ function renderMixer(){
  ${groupSection(`Lectures actives (${playing.length})`,playing.length?`<div class="card stack">${playing.map(v=>`<div class="item-row"><div class="sound-icon">♫</div><div class="grow"><div class="soundname">${safeName(v.soundId)}</div><small>${v.loop?'En boucle':'Ponctuel'} · ${h(v.groupKey.replace(':',' · '))}</small></div>${btn('■ Stop','stop-voice',`data-id="${v.id}"`,'sm warn')}</div>`).join('')}</div>`:empty('Aucune lecture active','Lancez des sons depuis votre bibliothèque, une scène ou une zone.'))}`;
 }
 function renderSettings(){return `${pageHead('Préférences','Réglages et sauvegardes','Gérez votre collection locale et conservez-en une copie à l’extérieur.',btn('＋ Importer','import','','sm primary'))}
- <div class="cards"><div class="card"><h3>Fichiers audio</h3><p class="card-desc">Importez vos propres MP3, WAV, OGG, M4A ou autres formats compatibles avec le navigateur. Les fichiers restent dans le stockage local du navigateur.</p><div class="btn-row">${btn('Importer mes sons','import','','sm primary')}${btn('Installer 6 exemples synthétiques','install-demo')}</div><div class="divider"></div><p class="card-desc"><strong>${sounds.size}</strong> sons présents · ${formatSize([...sounds.values()].reduce((n,s)=>n+(s.size||0),0))} environ</p></div>
+ <div class="cards"><div class="card"><h3>Fichiers audio</h3><p class="card-desc">Importez vos propres MP3, WAV, OGG, M4A ou autres formats compatibles avec le navigateur. Les fichiers restent dans le stockage local du navigateur.</p><div class="btn-row">${btn('Importer mes sons','import','','sm primary')}${btn('Installer le pack CC0 ('+integratedCatalog.length+' sons)','install-library','','sm primary')}${btn('Installer 6 exemples synthétiques','install-demo')}</div><div class="divider"></div><p class="card-desc"><strong>${sounds.size}</strong> sons présents · ${formatSize([...sounds.values()].reduce((n,s)=>n+(s.size||0),0))} environ</p></div>
  <div class="card"><h3>Sauvegarde complète</h3><p class="card-desc">Exporte les campagnes, sessions, tags, zones <strong>et les fichiers audio</strong> dans un JSON autonome. Le fichier peut être volumineux.</p><div class="btn-row">${btn('↓ Exporter une sauvegarde','backup-export','','sm primary')}${btn('↑ Restaurer','backup-import')}</div><p class="footnote">La restauration remplace toutes les données locales actuelles. Conservez des copies régulières : un navigateur peut effacer son stockage.</p></div>
  <div class="card"><h3>Installation mobile</h3><p class="card-desc">Une fois le projet hébergé en HTTPS (par exemple sur GitHub Pages), ouvrez-le sur Android puis choisissez « Installer l’application » dans Chrome. Les sons déjà importés seront accessibles hors ligne.</p>${btn('Demander stockage persistant','persist-storage')}<p class="footnote">L’installation sur iPhone passe par Safari → Partager → Sur l’écran d’accueil. Les navigateurs imposent des limites de stockage variables.</p></div>
  <div class="card"><h3>Fonctionnement</h3><p class="card-desc">Les tags sont cumulables, les sons ne sont stockés qu'une fois. Une scène rassemble des boucles et effets ; une zone contient des boucles et des événements à poids variables. Les sessions ne lancent pas automatiquement des sons au chargement.</p>${btn('Afficher le guide rapide','help')}</div></div>`}
@@ -292,6 +293,7 @@ async function handleAction(target){
   case 'backup-export':await exportBackup();break;
   case 'backup-import':document.querySelector('#restore-input')?.click();break;
   case 'install-demo':await installDemo();break;
+  case 'install-library':await installLibrary();break;
   case 'persist-storage':{
     if(!navigator.storage?.persist){notify('Option non prise en charge sur cet appareil.',true);return;}
     const ok=await navigator.storage.persist();notify(ok?'Stockage persistant autorisé.':'Le navigateur n’a pas accordé le stockage persistant.');break;}
@@ -346,6 +348,14 @@ async function importFiles(files){
  let added=0;ui.importing=good.length;render();
  for(const file of good){try{const record={...soundMeta(file),blob:file};await putSound(record);sounds.set(record.id,Object.fromEntries(Object.entries(record).filter(([key])=>key!=='blob')));added++;}catch(err){console.error(err);notify('Import impossible pour '+file.name+' : '+err.message,true)}ui.importing--;}
  render();notify(`${added} son(s) importé(s). Vous pouvez maintenant modifier leurs tags.`);
+}
+async function installLibrary(){
+ const list=integratedCatalog.filter(s=>!sounds.has(s.id));
+ if(!list.length){notify('Bibliothèque déjà installée.');return;}
+ if(!confirm('Télécharger '+list.length+' bruitages CC0 sur cet appareil ?'))return;
+ let ok=0,failed=0;ui.importing=list.length;render();
+ for(const meta of list){try{const r=await fetch(meta.assetUrl);if(!r.ok)throw Error('HTTP '+r.status);const blob=await r.blob();const record={...meta,size:blob.size,createdAt:Date.now(),blob};await putSound(record);const {blob:unused,...info}=record;sounds.set(meta.id,info);ok++;}catch(e){failed++;console.error(meta.filename,e);}ui.importing--;if((ok+failed)%10===0){render();await new Promise(resolve=>setTimeout(resolve,0));}}
+ render();notify(ok+' sons installés'+(failed?' · '+failed+' erreurs':'')+'.');
 }
 async function installDemo(){
  if(sounds.size>0&&!confirm('Ajouter 6 sons synthétiques de démonstration à votre bibliothèque ?'))return;
